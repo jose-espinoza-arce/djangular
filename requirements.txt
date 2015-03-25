@@ -1,0 +1,10 @@
+dj-database-url
+dj-static
+django-appconf
+django-compressor
+djangorestframework
+drf-nested-routers
+gunicorn
+six
+static3
+wsgiref
