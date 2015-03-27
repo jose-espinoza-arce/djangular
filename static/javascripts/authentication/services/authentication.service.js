@@ -21,18 +21,34 @@
     * @desc The Factory to be returned
     */
     var Authentication = {
+      deleteToken: deleteToken,
       getAuthenticatedAccount: getAuthenticatedAccount,
+      getToken: getToken,
       isAuthenticated: isAuthenticated,
       login: login,
       logout: logout,  
       register: register,
       setAuthenticatedAccount: setAuthenticatedAccount,
+      setToken: setToken,
       unauthenticate: unauthenticate
     };
 
     return Authentication;
 
     ////////////////////
+    
+    //JSONWebToken
+    function getToken() {
+      return window.localStorage.getItem('token');
+    }
+
+    function setToken(token) {
+      window.localStorage.setItem('token', token);
+    }
+
+    function deleteToken() {
+      window.localStorage.removeItem('token');
+    }
 
     /**
     * @name register
@@ -85,7 +101,12 @@
        * @desc Set the authentiucated acvount and redirec to index
        */
       function loginSuccessFn(data, status, headers, config) {
-        Authentication.setAuthenticatedAccount(data.data);
+        //Authentication.setAuthenticatedAccount(data.data);
+        console.log(data.data);
+        if (data.data.token) {
+          console.log(data);  
+          Authentication.setToken(data.data.token);
+        }
 
         window.location= '/';
       }
@@ -115,7 +136,7 @@
       * @desc Unauthenticate and redirect to indexwithpage reload
       */
      function logoutSuccessFn(data, status, headers, config) {
-       Authentication.unauthenticate();
+       Authentication.deleteToken();
 
        window.location = '/';
      }

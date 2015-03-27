@@ -4,7 +4,8 @@
   angular
     .module('thinkster.authentication', [
       'thinkster.authentication.controllers',
-      'thinkster.authentication.services'
+      'thinkster.authentication.services',
+      'thinkster.authentication.interceptors'
     ]);
 
   angular
@@ -12,4 +13,7 @@
 
   angular
     .module('thinkster.authentication.services', ['ngCookies']);
+
+  angular
+    .module('thinkster.authentication.interceptors', []);
 })();

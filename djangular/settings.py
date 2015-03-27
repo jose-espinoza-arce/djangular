@@ -10,8 +10,13 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
+import datetime
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=14)
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -107,8 +112,13 @@ TEMPLATE_DIRS = (
 )
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': {
+        'rest_framework.permissions.IsAutheticated',
+    },
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     )
 }
 

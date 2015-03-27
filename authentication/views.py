@@ -5,6 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework import permissions, viewsets, views, status
 from rest_framework.response import Response
 
+from rest_framework_jwt.views import ObtainJSONWebToken
+from rest_framework_jwt.utils import jwt_response_payload_handler
+
 from authentication.models import Account
 from authentication.permissions import IsAccountOwner
 from authentication.serializers import AccountSerializer
@@ -17,6 +20,25 @@ class LogoutView(views.APIView):
         logout(request)
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+class LoginJWTView(ObtainJSONWebToken):
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        #print serializer.is_valid()
+
+        if serializer.is_valid():
+            user = serializer.object.get('user') or request.user
+            #print user
+            login(request, user)
+            token = serializer.object.get('token')
+            #print token
+            response_data = jwt_response_payload_handler(token, user, request)
+            #print response_data
+
+            return Response(response_data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class LoginView(views.APIView):
