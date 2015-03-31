@@ -9,7 +9,7 @@ from posts.serializers import PostSerializer
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.order_by('-created_at')
     serializer_class = PostSerializer
-    print 'postenado'
+    #print 'postenado'
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
@@ -17,6 +17,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return (permissions.IsAuthenticated(), IsAuthorOfPost(),)
 
     def perform_create(self, serializer):
+        print serializer
         instance = serializer.save(author=self.request.user)
 
         return super(PostViewSet, self).perform_create(serializer)
@@ -24,7 +25,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class AccountPostsViewSet(viewsets.ViewSet):
     queryset = Post.objects.select_related('author').all()
-    print 'en el profile'
+    #print 'en el profile'
     serializer_class = PostSerializer
 
     def list(self, request, account_username=None):

@@ -150,7 +150,7 @@
      } 
    }
     
-    /**
+    /** DEPRECATED---USING JWT AUTHENTICATIOON INSTEAD
      * @name getAuthenticatedAccount
      * @desc Return the currently authenticated account
      * @returns {object|undefined} Account if authenticated, else `undefined`
@@ -171,7 +171,8 @@
      * @memberOf thinkster.authentication.services.Authentication
      */
     function isAuthenticated() {
-      return !!$cookies.authenticatedAccount;
+      //return !!$cookies.authenticatedAccount;
+      return !(window.localStorage.getItem("token")===null); 
     }
 
     /**
