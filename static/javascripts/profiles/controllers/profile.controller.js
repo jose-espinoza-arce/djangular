@@ -9,12 +9,12 @@
     .module('thinkster.profiles.controllers')
     .controller('ProfileController', ProfileController);
 
-  ProfileController.$inject = ['$location', '$routeParams', 'Posts', 'Profile', 'Snackbar'];
+  ProfileController.$inject = ['$location', 'Authentication', '$routeParams', 'Posts', 'Profile', 'Snackbar'];
 
   /**
   * @namespace ProfileController
   */
-  function ProfileController($location, $routeParams, Posts, Profile, Snackbar) {
+  function ProfileController($location, Authentication, $routeParams, Posts, Profile, Snackbar) {
     var vm = this;
 
     vm.profile = undefined;

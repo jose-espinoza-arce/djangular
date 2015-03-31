@@ -22,14 +22,17 @@
     */
     var Authentication = {
       deleteToken: deleteToken,
+      deleteUsername: deleteUsername,
       getAuthenticatedAccount: getAuthenticatedAccount,
       getToken: getToken,
+      getUsername:getUsername,
       isAuthenticated: isAuthenticated,
       login: login,
       logout: logout,  
       register: register,
       setAuthenticatedAccount: setAuthenticatedAccount,
       setToken: setToken,
+      setUsername: setUsername,
       unauthenticate: unauthenticate
     };
 
@@ -48,6 +51,18 @@
 
     function deleteToken() {
       window.localStorage.removeItem('token');
+    }
+
+    function getUsername(){
+      return window.localStorage.getItem('username');
+    }
+
+    function setUsername(username) {
+      window.localStorage.setItem('username', username);
+    }
+
+    function deleteUsername() {
+      window.localStorage.removeItem('username');
     }
 
     /**
@@ -102,9 +117,10 @@
        */
       function loginSuccessFn(data, status, headers, config) {
         //Authentication.setAuthenticatedAccount(data.data);
-        console.log(data.data);
+        console.log(data.data.token);
         if (data.data.token) {
-          console.log(data);  
+          console.log(data);          
+          Authentication.setUsername(data.data.username);
           Authentication.setToken(data.data.token);
         }
 
@@ -137,6 +153,7 @@
       */
      function logoutSuccessFn(data, status, headers, config) {
        Authentication.deleteToken();
+       Authentication.deleteUsername();
 
        window.location = '/';
      }
@@ -171,7 +188,7 @@
      * @memberOf thinkster.authentication.services.Authentication
      */
     function isAuthenticated() {
-      return !!$cookies.authenticatedAccount;
+      return !(window.localStorage.getItem('token')===null);
     }
 
     /**

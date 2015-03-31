@@ -25,17 +25,18 @@
     activate();
 
     function activate() {
-      var authenticatedAccount = Authentication.getAuthenticatedAccount();
-      var username = $routeParams.username.substr(1);
+      var token = Authentication.getToken();
+      var username_url = $routeParams.username.substr(1);
+      var username = Authentication.getUsername();
 
       //redirect if not logged in
-      if (!authenticatedAccount) {
-        $locatioin.urñ('/');
+      if (!token) {
+        $location.url('/');
         Snackbar.error('Pelas! no estas autorizado para ver esta pagina.');
       } else {
         //reditect if looged in, but not the ownerof this profile.
-        if (authenticatedAccount.username !== username) {
-          $location('/');
+        if (username !== username_url) {
+          $location.url('/');
           Snackbar.error('Pelas! no eres el propietario de este perfil.');
         }
       }
@@ -74,7 +75,8 @@
        * @desc redirectto indexand display succes snackbar
        */
       function profileSuccessFn(data, status, headers, config) {
-        Authentication.unauthenticate();
+        Authentication.deleteToken();
+	Authentication.deleteUsername();
         $location.url('/');
 
         Snackbar.show('Tu cuenta ha sido eliminada.')
