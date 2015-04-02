@@ -29,23 +29,34 @@ class LogoutView(views.APIView):
 
 class LoginJWTView(ObtainJSONWebToken):
     def post(self, request):
-        print request.DATA
-        serializer = self.serializer_class(data=request.DATA)
-        print serializer.is_valid()
+        print request.DATA['email']
+        #user = Account.objects.get(email=request.DATA.email)
+        print Account.objects.filter(email=request.DATA['email'])
+        if Account.objects.filter(email=request.DATA['email']).exists():
+            serializer = self.serializer_class(data=request.DATA)
+            #print serializer
 
-        if serializer.is_valid():
-            user = serializer.object.get('user') or request.user
-            #print user
-            login(request, user)
-            token = serializer.object.get('token')
-            #print token
-            response_data = jwt_response_payload_handler(token, user, request)
-            #print response_data
+            if serializer.is_valid():
+                #user = serializer.object.get('user') or request.user
+                #print user
+                login(request, user)
+                token = serializer.object.get('token')
+                #print token
+                response_data = jwt_response_payload_handler(token, user, request)
+                #print response_data
 
-            return Response(response_data)
+                return Response(response_data)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            print serializer.errors
+            return Response({
+                'status': 'Clave invalida',
+                'message': 'Introduzca la clave correcta.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                'status': 'Usuario no registrado',
+                'message': 'Elige un nombre de usuario valido.'
+            }, status=status.HTTP_404_NOT_FOUND)
 
 
 class LoginView(views.APIView):

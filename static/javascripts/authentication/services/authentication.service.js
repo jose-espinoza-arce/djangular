@@ -9,13 +9,13 @@
     .module('thinkster.authentication.services')
     .factory('Authentication', Authentication);
 
-  Authentication.$inject = ['$cookies', '$http'];
+  Authentication.$inject = ['$cookies', '$http', '$q'];
 
   /**
   * @namespace Authentication
   * @returns {Factory}
   */
-  function Authentication($cookies, $http) {
+  function Authentication($cookies, $http, $q) {
     /**
     * @name Authentication
     * @desc The Factory to be returned
@@ -108,7 +108,8 @@
     **/
     function login(email, password) {
       return $http.post('/api/v1/auth/login/', {
-        email: email, password: password
+        email: email, 
+        password: password
       }).then(loginSuccessFn, loginErrorFn);
 
       /**
@@ -117,14 +118,19 @@
        */
       function loginSuccessFn(data, status, headers, config) {
         //Authentication.setAuthenticatedAccount(data.data);
-        console.log(data.data.token);
+        console.log('desde el callback de exito: ');
+        console.log(data);
         if (data.data.token) {
           console.log(data);          
           Authentication.setUsername(data.data.username);
           Authentication.setToken(data.data.token);
+          window.location='/';
+        } else {
+          console.log('en el reject')
+          return $q.reject(loginErrorFn(data));
         }
 
-        window.location= '/';
+        //window.location= '/';
       }
 
       /**
@@ -132,8 +138,9 @@
        * @desc Log 'La estas cagando!' to the console
        */
       function loginErrorFn(data, status, headers, config) {
-        console.log(data.data);
-        console.error('No fue posible  iniciar sesion.');
+        console.log('desde el callback de error: '); 
+        console.log( data);
+        //console.error('No fue posible  iniciar sesion.');
       }  
     }
 
