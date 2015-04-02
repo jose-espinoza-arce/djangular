@@ -6,11 +6,17 @@ from rest_framework import permissions, viewsets, views, status
 from rest_framework.response import Response
 
 from rest_framework_jwt.views import ObtainJSONWebToken
-from rest_framework_jwt.utils import jwt_response_payload_handler
+#from rest_framework_jwt.utils import jwt_response_payload_handler
 
 from authentication.models import Account
 from authentication.permissions import IsAccountOwner
 from authentication.serializers import AccountSerializer
+
+def jwt_response_payload_handler(token, user=None, request=None):
+    return {
+        'token': token,
+        'username': user.username
+    }
 
 
 class LogoutView(views.APIView):
@@ -23,8 +29,9 @@ class LogoutView(views.APIView):
 
 class LoginJWTView(ObtainJSONWebToken):
     def post(self, request):
+        print request.DATA
         serializer = self.serializer_class(data=request.DATA)
-        #print serializer.is_valid()
+        print serializer.is_valid()
 
         if serializer.is_valid():
             user = serializer.object.get('user') or request.user
